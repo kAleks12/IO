@@ -1,13 +1,13 @@
 package interfaces.database;
 
+import enums.UserRole;
 import models.Flight;
-import models.Ticket;
+import models.FlightFilter;
 
 import java.util.List;
 
 public interface DBHandler {
-    List<Ticket> findTickets(String query);
-    List<Flight> findFlights(String query);
-    boolean deleteTicket(String query);
-    boolean updateFlight(Ticket ticket, Flight newFlight);
+    List<Flight> findFlights(FlightFilter filter);
+
+    boolean addFlight(Flight flight);
 }
