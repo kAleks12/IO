@@ -32,10 +32,11 @@ public class BasicCustomerActions implements CustomerActions {
             var bought = handler.addTicket(flight.flightID(), price, documentID);
 
             if (!bought) {
-                var errorMessage = "Failed to buy ticket for parameters: %d; %f; %s;";
-                var filledErrorMessage = String.format(errorMessage, flight.flightID(), price, documentID);
+                var errorMessage = """
+                Failed to buy ticket for parameters: %d; %f; %s;
+                """.formatted(flight.flightID(), price, documentID);
 
-                throw new UserAPIException(filledErrorMessage);
+                throw new UserAPIException(errorMessage);
             }
         } catch (Exception e) {
             throw new UserAPIException(e);
