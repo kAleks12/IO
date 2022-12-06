@@ -1,12 +1,15 @@
 package interfaces.clients;
 
-import models.Filter;
+import exceptions.UserAPIException;
 import models.Flight;
+import models.FlightFilter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface EmployeeActions {
-    boolean addFlight(Flight flight);
-    boolean cancelFlight(Flight flight);
-    ArrayList<Flight> viewFlights(Filter filter);
+    boolean addFlight(Flight flight) throws UserAPIException;
+
+    boolean cancelFlight(Flight flight) throws UserAPIException;
+
+    List<Flight> getFlights(FlightFilter filter) throws UserAPIException;
 }
