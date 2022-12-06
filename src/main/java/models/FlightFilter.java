@@ -15,7 +15,6 @@ public class FlightFilter {
         this.destination = newFilter.destination;
     }
 
-
     public LocalDateTime getDepartureTime() {
         return departureTime;
     }
@@ -57,10 +56,9 @@ public class FlightFilter {
             this.destination = destination;
             return this;
         }
-        
+
         public FlightFilter build() {
             return new FlightFilter(this);
         }
     }
 }
-

@@ -8,6 +8,5 @@ public record Flight(
         LocalDateTime departureTime,
         LocalDateTime arrivalTime,
         String origin,
-        String destination) {
-
-}
+        String destination
+) {}
