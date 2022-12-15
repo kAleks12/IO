@@ -18,23 +18,27 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
         this.ds = ds;
     }
 
-    private String toQuery(int id) {
+    private String findFlightQuery(int id) {
         return "TODO";
     }
 
-    private String toQuery(TicketFilter filter, String documentId) {
+    private String updateSeatsQuery(int id, int newAvailableSeats) {
         return "TODO";
     }
 
-    private String toQuery(FlightFilter filter) {
+    private String findTicketsQuery(TicketFilter filter, String documentId) {
         return "TODO";
     }
 
-    private String toQuery(Ticket ticket) {
+    private String findFlightsQuery(FlightFilter filter) {
         return "TODO";
     }
 
-    private String toQuery(int flightID, float price, String documentID) {
+    private String deleteTicketQuery(Ticket ticket) {
+        return "TODO";
+    }
+
+    private String addTicketQuery(int flightID, float price, String documentID) {
         return "TODO";
     }
 
@@ -56,7 +60,7 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
                 Connection conn = ds.getConnection();
                 Statement statement = conn.createStatement()
         ) {
-            var query = toQuery(filter, documentId);
+            var query = findTicketsQuery(filter, documentId);
             var result = statement.executeQuery(query);
 
             return toTicketList(result);
@@ -71,7 +75,7 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
                 Connection conn = ds.getConnection();
                 Statement statement = conn.createStatement()
         ) {
-            var query = toQuery(ticket);
+            var query = deleteTicketQuery(ticket);
             statement.executeUpdate(query);
         } catch (SQLException e) {
             return false;
@@ -86,7 +90,7 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
                 Connection conn = ds.getConnection();
                 Statement statement = conn.createStatement()
         ) {
-            var query = toQuery(flightID, price, documentID);
+            var query = addTicketQuery(flightID, price, documentID);
             statement.executeUpdate(query);
         } catch (SQLException e) {
             return false;
@@ -101,7 +105,7 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
                 Connection conn = ds.getConnection();
                 Statement statement = conn.createStatement()
         ) {
-            var query = toQuery(filter);
+            var query = findFlightsQuery(filter);
             var result = statement.executeQuery(query);
 
             return toFlightList(result);
@@ -116,12 +120,46 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
                 Connection conn = ds.getConnection();
                 Statement statement = conn.createStatement()
         ) {
-            var query = toQuery(id);
+            var query = findFlightQuery(id);
             var result = statement.executeQuery(query);
 
             return toFlight(result);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean takeSeat(int flightId) {
+        try (
+                Connection conn = ds.getConnection();
+                Statement statement = conn.createStatement()
+        ) {
+
+            var flight = toFlight(statement.executeQuery(findFlightQuery(flightId)));
+            var query = updateSeatsQuery(flightId, flight.availableSeatsNumber() - 1);
+
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean freeSeat(int flightId) {
+        try (
+                Connection conn = ds.getConnection();
+                Statement statement = conn.createStatement()
+        ) {
+
+            var flight = toFlight(statement.executeQuery(findFlightQuery(flightId)));
+            var query = updateSeatsQuery(flightId, flight.availableSeatsNumber() + 1);
+
+        } catch (SQLException e) {
+            return false;
+        }
+
+        return true;
     }
 }

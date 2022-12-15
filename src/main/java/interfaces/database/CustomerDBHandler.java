@@ -10,5 +10,8 @@ public interface CustomerDBHandler extends DBHandler {
 
     boolean deleteTicket(Ticket ticket);
 
-    boolean addTicket(int flightID, float price, String documentID);
+    boolean addTicket(int flightId, float price, String documentId);
+
+    boolean takeSeat(int flightId);
+    boolean freeSeat(int flightId);
 }

@@ -20,7 +20,7 @@ public class BasicCustomerActions implements CustomerActions {
     }
 
 
-    private void deleteTicket(Ticket ticket) throws UserAPIException{
+    private void deleteTicket(Ticket ticket) throws UserAPIException {
         try {
             var cancelled = handler.deleteTicket(ticket);
 
@@ -28,10 +28,13 @@ public class BasicCustomerActions implements CustomerActions {
                 var errorMessage = "Failed to cancel " + ticket;
                 throw new UserAPIException(errorMessage);
             }
+
+            handler.freeSeat(ticket.getFlightID());
         } catch (Exception e) {
             throw new UserAPIException(e);
         }
     }
+
     @Override
     public List<Ticket> getTickets(TicketFilter filter, String documentId) throws UserAPIException {
         try {
@@ -48,6 +51,7 @@ public class BasicCustomerActions implements CustomerActions {
 
             if (flight.availableSeatsNumber() > 0) {
                 var bought = handler.addTicket(flight.flightID(), price, documentId);
+                handler.takeSeat(flight.flightID());
 
                 if (!bought) {
                     var errorMessage = """
@@ -87,6 +91,8 @@ public class BasicCustomerActions implements CustomerActions {
                     var errorMessage = "Failed to cancel " + ticket;
                     throw new UserAPIException(errorMessage);
                 }
+
+                handler.freeSeat(flight.flightID());
             } else {
                 throw new UserAPIException("Ticket cannot be cancelled too little time to departure");
             }
