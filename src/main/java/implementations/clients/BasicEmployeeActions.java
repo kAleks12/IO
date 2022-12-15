@@ -7,6 +7,7 @@ import interfaces.database.EmployeeDBHandler;
 import models.Flight;
 import models.FlightFilter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class BasicEmployeeActions implements EmployeeActions {
@@ -17,9 +18,10 @@ public class BasicEmployeeActions implements EmployeeActions {
     }
 
     @Override
-    public boolean addFlight(Flight flight) throws UserAPIException {
+    public boolean addFlight(int availableSeats, LocalDateTime departureTime, LocalDateTime arrivalTime,
+                             String origin, String destination) throws UserAPIException {
         try {
-            return handler.addFlight(flight);
+            return handler.addFlight(availableSeats, departureTime, arrivalTime, origin, destination);
         } catch (Exception e) {
             throw new UserAPIException(e);
         }
