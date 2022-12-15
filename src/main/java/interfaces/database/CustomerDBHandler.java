@@ -6,7 +6,7 @@ import models.TicketFilter;
 import java.util.List;
 
 public interface CustomerDBHandler extends DBHandler {
-    List<Ticket> findTickets(TicketFilter filter);
+    List<Ticket> findTickets(TicketFilter filter, String documentId);
 
     boolean deleteTicket(Ticket ticket);
 

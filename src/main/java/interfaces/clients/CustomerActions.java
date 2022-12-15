@@ -10,9 +10,9 @@ import models.TicketFilter;
 import java.util.List;
 
 public interface CustomerActions {
-    List<Ticket> getTickets(TicketFilter filter) throws BadFilterException, UserAPIException;
+    List<Ticket> getTickets(TicketFilter filter, String documentId) throws BadFilterException, UserAPIException;
 
-    void buyTicket(Flight flight, String documentID, float price) throws UserAPIException;
+    void buyTicket(Flight flight, String documentId, float price) throws UserAPIException;
 
     List<Flight> getFlights(FlightFilter filter) throws UserAPIException;
 
