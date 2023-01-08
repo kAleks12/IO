@@ -1,8 +1,7 @@
 package implementations.clients;
 
-import exceptions.UserAPIException;
+import exceptions.APIException;
 import interfaces.clients.EmployeeActions;
-import interfaces.database.DBHandler;
 import interfaces.database.EmployeeDBHandler;
 import models.Flight;
 import models.FlightFilter;
@@ -19,29 +18,29 @@ public class BasicEmployeeActions implements EmployeeActions {
 
     @Override
     public boolean addFlight(int availableSeats, LocalDateTime departureTime, LocalDateTime arrivalTime,
-                             String origin, String destination) throws UserAPIException {
+                             String origin, String destination) throws APIException {
         try {
             return handler.addFlight(availableSeats, departureTime, arrivalTime, origin, destination);
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
     @Override
-    public boolean cancelFlight(Flight flight) throws UserAPIException {
+    public boolean cancelFlight(Flight flight) throws APIException {
         try {
             return handler.deleteFlight(flight);
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
     @Override
-    public List<Flight> getFlights(FlightFilter filter) throws UserAPIException {
+    public List<Flight> getFlights(FlightFilter filter) throws APIException {
         try {
             return handler.findFlights(filter);
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 }

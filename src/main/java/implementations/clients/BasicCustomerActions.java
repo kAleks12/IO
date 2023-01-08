@@ -1,6 +1,6 @@
 package implementations.clients;
 
-import exceptions.UserAPIException;
+import exceptions.APIException;
 import interfaces.clients.CustomerActions;
 import interfaces.database.CustomerDBHandler;
 import models.Flight;
@@ -20,66 +20,68 @@ public class BasicCustomerActions implements CustomerActions {
     }
 
 
-    private void deleteTicket(Ticket ticket) throws UserAPIException {
+    private void deleteTicket(Ticket ticket) throws APIException {
         try {
             var cancelled = handler.deleteTicket(ticket);
 
             if (!cancelled) {
                 var errorMessage = "Failed to cancel " + ticket;
-                throw new UserAPIException(errorMessage);
+                throw new APIException(errorMessage);
             }
 
             handler.freeSeat(ticket.getFlightID());
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
     @Override
-    public List<Ticket> getTickets(TicketFilter filter, String documentId) throws UserAPIException {
+    public List<Ticket> getTickets(TicketFilter filter, String documentId) throws APIException {
         try {
             return handler.findTickets(filter, documentId);
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
     @Override
-    public void buyTicket(Flight desiredFlight, String documentId, float price) throws UserAPIException {
+    public void buyTicket(Flight desiredFlight, String documentId, float price) throws APIException {
         try {
             var flight = handler.findFlightById(desiredFlight.flightID());
 
             if (flight.availableSeatsNumber() > 0) {
                 var bought = handler.addTicket(flight.flightID(), price, documentId);
-                handler.takeSeat(flight.flightID());
 
                 if (!bought) {
                     var errorMessage = """
                             Failed to buy ticket for parameters: %d; %f; %s;
                             """.formatted(flight.flightID(), price, documentId);
 
-                    throw new UserAPIException(errorMessage);
+                    throw new APIException(errorMessage);
                 }
+
+                handler.takeSeat(flight.flightID());
             } else {
                 var errorMessage = "Failed to buy ticket, all seats are taken!";
-                throw new UserAPIException(errorMessage);
+                throw new APIException(errorMessage);
             }
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
+
     @Override
-    public List<Flight> getFlights(FlightFilter filter) throws UserAPIException {
+    public List<Flight> getFlights(FlightFilter filter) throws APIException {
         try {
             return handler.findFlights(filter);
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
     @Override
-    public void cancelTicket(Ticket ticket) throws UserAPIException {
+    public void cancelTicket(Ticket ticket) throws APIException {
         try {
             var flight = handler.findFlightById(ticket.getFlightID());
             long days = ChronoUnit.DAYS.between(flight.departureTime(), LocalDateTime.now());
@@ -89,21 +91,21 @@ public class BasicCustomerActions implements CustomerActions {
 
                 if (!cancelled) {
                     var errorMessage = "Failed to cancel " + ticket;
-                    throw new UserAPIException(errorMessage);
+                    throw new APIException(errorMessage);
                 }
 
                 handler.freeSeat(flight.flightID());
             } else {
-                throw new UserAPIException("Ticket cannot be cancelled too little time to departure");
+                throw new APIException("Ticket cannot be cancelled too little time to departure");
             }
 
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 
     @Override
-    public void rescheduleTicket(Ticket ticket, Flight desiredFlight) throws UserAPIException {
+    public void rescheduleTicket(Ticket ticket, Flight desiredFlight) throws APIException {
         try {
             var flight = handler.findFlightById(desiredFlight.flightID());
 
@@ -112,7 +114,7 @@ public class BasicCustomerActions implements CustomerActions {
                 deleteTicket(ticket);
             }
         } catch (Exception e) {
-            throw new UserAPIException(e);
+            throw new APIException(e);
         }
     }
 }
