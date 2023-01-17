@@ -137,7 +137,9 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
         ) {
 
             var flight = toFlight(statement.executeQuery(findFlightQuery(flightId)));
+            assert flight != null;
             var query = updateSeatsQuery(flightId, flight.availableSeatsNumber() - 1);
+            statement.executeQuery(query);
 
         } catch (SQLException e) {
             return false;
@@ -154,7 +156,9 @@ public class BasicCustomerDBHandler implements CustomerDBHandler {
         ) {
 
             var flight = toFlight(statement.executeQuery(findFlightQuery(flightId)));
+            assert flight != null;
             var query = updateSeatsQuery(flightId, flight.availableSeatsNumber() + 1);
+            statement.executeQuery(query);
 
         } catch (SQLException e) {
             return false;
