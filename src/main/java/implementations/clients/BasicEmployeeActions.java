@@ -1,26 +1,27 @@
 package implementations.clients;
 
 import exceptions.APIException;
+import implementations.generator.FlightSignatureGenerator;
 import interfaces.clients.EmployeeActions;
 import interfaces.database.EmployeeDBHandler;
 import models.Flight;
 import models.FlightFilter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class BasicEmployeeActions implements EmployeeActions {
-    private final EmployeeDBHandler handler;
+    private EmployeeDBHandler handler;
+    private FlightSignatureGenerator generator;
 
-    public BasicEmployeeActions(EmployeeDBHandler handler) {
+    public BasicEmployeeActions(EmployeeDBHandler handler, FlightSignatureGenerator generator) {
         this.handler = handler;
+        this.generator = generator;
     }
 
     @Override
-    public boolean addFlight(int availableSeats, LocalDateTime departureTime, LocalDateTime arrivalTime,
-                             String origin, String destination) throws APIException {
+    public boolean addFlight(Flight flight) throws APIException {
         try {
-            return handler.addFlight(availableSeats, departureTime, arrivalTime, origin, destination);
+            return handler.addFlight(flight);
         } catch (Exception e) {
             throw new APIException(e);
         }
@@ -42,5 +43,12 @@ public class BasicEmployeeActions implements EmployeeActions {
         } catch (Exception e) {
             throw new APIException(e);
         }
+    }
+
+    @Override
+    public List<String> getFlightSignatures() throws APIException {
+        var filter = new FlightFilter.FlightFilterBuilder().build();
+
+        return handler.findFlights(filter).stream().map(generator::generateSignature).toList();
     }
 }

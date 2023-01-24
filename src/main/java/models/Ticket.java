@@ -10,10 +10,4 @@ public class Ticket {
     private final int ticketID;
     private int flightID;
     private float price;
-
-//    Ticket(String documentID, int flightID, float price){
-//        this.documentID = documentID;
-//        this.flightID = flightID;
-//        this.price = price;
-//    }
 }
